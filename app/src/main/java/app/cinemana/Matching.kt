@@ -74,12 +74,16 @@ object Matching {
     fun selectEpisodes(spec: String, all: List<Episode>): List<Episode> {
         val out = LinkedHashSet<Episode>()
         for (tok in spec.split(Regex("[,\\s]+")).filter { it.isNotBlank() }) {
-            Regex("[Ss](\\d+)[Ee](\\d+)").matchEntire(tok)?.let { m ->
-                out += all.filter { it.season == m.groupValues[1].toInt() && it.number == m.groupValues[2].toInt() }; continue
+            val se = Regex("[Ss](\\d+)[Ee](\\d+)").matchEntire(tok)
+            if (se != null) {
+                out += all.filter { it.season == se.groupValues[1].toInt() && it.number == se.groupValues[2].toInt() }
+                continue
             }
-            Regex("(\\d+)-(\\d+)").matchEntire(tok)?.let { m ->
-                val (a, b) = m.groupValues[1].toInt() to m.groupValues[2].toInt()
-                out += all.filter { it.number in minOf(a, b)..maxOf(a, b) }; continue
+            val rg = Regex("(\\d+)-(\\d+)").matchEntire(tok)
+            if (rg != null) {
+                val a = rg.groupValues[1].toInt(); val b = rg.groupValues[2].toInt()
+                out += all.filter { it.number in minOf(a, b)..maxOf(a, b) }
+                continue
             }
             tok.toIntOrNull()?.let { n -> out += all.filter { it.number == n } }
         }
