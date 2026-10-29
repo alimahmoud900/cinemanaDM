@@ -57,7 +57,7 @@ class DownloadService : Service() {
 
     @Synchronized private fun pump() {
         val jobs = Store.jobs.value
-        for (d in jobs) { if (running.size >= Prefs.maxActive(this) || !allowed()) break; if (d.state == St.QUEUED && d.id !in running) start(d) }
+        for (d in jobs) { if (running.size >= Prefs.maxActive(this) || !allowed()) break; if (d.state == St.QUEUED && !running.containsKey(d.id)) start(d) }
         if (running.isEmpty() && jobs.none { it.state == St.QUEUED }) { stopForeground(STOP_FOREGROUND_DETACH); nm.cancel(1); stopSelf() }
         else nm.notify(1, summary())
     }
