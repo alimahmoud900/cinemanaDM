@@ -31,7 +31,16 @@ jobs:
           gradle-version: "8.7"
 
       - name: Unit tests + debug APK
-        run: gradle :app:testDebugUnitTest :app:assembleDebug --stacktrace
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --console=plain
+
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            app/build/reports/
+            app/build/test-results/
 
       - name: Rename APK
         run: |
