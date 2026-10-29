@@ -13,7 +13,7 @@ class EngineTest {
     @Test fun planHandlesUnevenSizes() { val p = Planner.plan(50_000_003L, 7); assertEquals(50_000_003L, p.sumOf { it.last - it.first + 1 }) }
     @Test fun smallFilesUseOneConnection() = assertEquals(1, Planner.plan(1L shl 20, 8).size)
     @Test fun stateRoundTrips() {
-        val s = Saved(1000, true, listOf(Seg(0, 499, 120), Seg(500, 999, 500)))
+        val s = Saved(1000, true, listOf(Seg(0, 499, 120), Seg(500, 999, 1000)))
         val d = SegState.decode(SegState.encode(s))!!
         assertEquals(1000L, d.total); assertTrue(d.ranged); assertEquals(120L, d.segs[0].pos); assertEquals(0L, d.segs[1].left)
     }
